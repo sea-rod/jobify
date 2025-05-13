@@ -5,11 +5,13 @@
         <div class="text-2xl font-bold text-blue-600">Jobfiy</div>
         <div class="hidden md:flex space-x-8">
           <a href="#home" class="text-gray-700 hover:text-blue-600">Home</a>
-          <a href="#features" class="text-gray-700 hover:text-blue-600">Features</a>
+          <a href="/upload-resume" class="text-gray-700 hover:text-blue-600">Upload Resume</a>
           <a href="#about" class="text-gray-700 hover:text-blue-600">About</a>
           <a href="#contact" class="text-gray-700 hover:text-blue-600">Contact</a>
         </div>
-        <a href="/auth" class="text-white bg-blue-500 px-5 py-2 hover:text-blue-600">Login</a>
+        <a v-if="isAuth" href="/auth" class="text-white bg-blue-500 px-5 py-2 hover:text-blue-600">Login</a>
+        <a v-else="isAuth" href="#" class="text-white bg-red-500 px-5 py-2 hover:text-gray-200">Logout</a>
+
         <button class="md:hidden" @click="toggleMenu">
           <i class="fas fa-bars text-gray-700 text-2xl"></i>
         </button>
@@ -33,8 +35,13 @@
 
 <script setup>
 import { ref } from "vue";
+import { supabase } from "./supabase"
 
 const isMenuOpen = ref(false)
+
+const isAuth = ref(false)
+
+isAuth.value = supabase.auth.user?true:false
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value

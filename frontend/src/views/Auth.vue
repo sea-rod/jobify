@@ -133,23 +133,14 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { auth } from '../firebase'
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider
-} from 'firebase/auth'
-
-
-const router = useRouter()
+import router from '../router'
+import { supabase } from '../supabase' // Import your Supabase client
 
 // Reactive state
 const activeTab = ref('signup')
 
 const signupForm = ref({
-  name: '',
+  name: '', 
   email: '',
   password: ''
 })
@@ -204,11 +195,21 @@ const handleSignup = async () => {
   if (!isValid) return
 
   try {
-    await createUserWithEmailAndPassword(
-      auth,
-      signupForm.value.email,
-      signupForm.value.password
-    )
+    // Using Supabase to sign up the user
+    const { user, error } = await supabase.auth.signUp({
+      email: signupForm.value.email,
+      password: signupForm.value.password,
+      options: {
+      data: {
+        name: signupForm.value.name,
+      }
+    }
+    })
+
+    if (error) {
+      throw error
+    }
+
     message.value = 'Signup successful! Please log in.'
     messageType.value = 'success'
     activeTab.value = 'login'
@@ -240,11 +241,16 @@ const handleLogin = async () => {
   if (!isValid) return
 
   try {
-    await signInWithEmailAndPassword(
-      auth,
-      loginForm.value.email,
-      loginForm.value.password
-    )
+    // Using Supabase to log in the user
+    const { user, error } = await supabase.auth.signInWithPassword({
+      email: loginForm.value.email,
+      password: loginForm.value.password
+    })
+
+    if (error) {
+      throw error
+    }
+
     message.value = 'Login successful!'
     messageType.value = 'success'
     loginForm.value = { email: '', password: '' }
@@ -254,23 +260,7 @@ const handleLogin = async () => {
     messageType.value = 'error'
   }
 }
-
-// Google Sign-In handler
-const handleGoogleSignIn = async () => {
-  const provider = new GoogleAuthProvider()
-  try {
-    await signInWithPopup(auth, provider)
-    message.value = 'Logged in with Google!'
-    messageType.value = 'success'
-    router.push('/')
-  } catch (error) {
-    message.value = error.message
-    messageType.value = 'error'
-  }
-}
 </script>
-
-
 
 <style scoped>
 /* Tailwind CSS is already included in the parent app, so we only add scoped styles if needed */

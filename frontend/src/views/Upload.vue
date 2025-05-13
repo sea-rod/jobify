@@ -74,19 +74,23 @@
 </template>
 <script setup>
 import { ref, computed } from 'vue';
+import { supabase } from "../supabase"
+import api from "../axios"
 
 // Reactive state
 const fileName = ref(null);
+const file = ref(null);
 const feedback = ref([]);
 const isUploaded = ref(false);
 const isAnalyzed = ref(false);
 const atsResumeGenerated = ref(false);
 
 // Handle file upload via input
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+const handleFileUpload =  (event) => {
+    file.value = event.target.files[0];
     if (file) {
-        validateAndSetFile(file);
+        validateAndSetFile(file.value);
+        
     }
 };
 
@@ -133,8 +137,26 @@ const removeFile = () => {
 };
 
 // Mock resume upload
-const uploadResume = () => {
-    isUploaded.value = !isUploaded.value;
+const uploadResume = async (event) => {
+    
+    const formData = new FormData();
+    formData.append('file',file.value)
+    api.post('/get-feedback',formData).then((res)=>{
+        isUploaded.value = !isUploaded.value;
+        console.log(res);
+        
+    })
+    //  const { data: { user }, err } = await supabase.auth.getUser();
+
+    // const { data, error } = await supabase.storage.from('jobify').upload(`${user.id}/resume.pdf`, file.value)
+    //     console.log("uploaded successfully",data);
+        
+    //     if (error) {
+    //         console.log("error:",error);
+            
+    //     } else {
+    // // Handle success
+    //     }
 };
 
 // Mock analysis
