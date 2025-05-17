@@ -41,12 +41,10 @@ def get_resume_feedback(resume):
 
     response = chain.invoke({"resume": resume})
 
-    # print(response.get("feedback",[]))
-
     return response.get("feedback",[])
 
 
-def apply_feedback(resume, feedback):
+def apply_feedback(resume:str, feedback:list):
     parser = JsonOutputParser(
         pydantic_object={
             "type": "Object",
@@ -95,9 +93,6 @@ def apply_feedback(resume, feedback):
     chain = prompt | model | parser
 
     response = chain.invoke({"resume": resume, "feedback": feedback})
-
-    print(response["updated_resume"])
-    # print(response["questions"])
     return response["updated_resume"]
 
 

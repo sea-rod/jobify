@@ -36,7 +36,7 @@
                 </button>
             </div>
             <div v-if="!isAnalyzed && isUploaded" class="text-center mb-8">
-                <button @click="analyzeResume" :disabled="!fileName"
+                <button @click="analyzeResume" 
                     class="bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Analyze Resume
                 </button>
@@ -45,10 +45,10 @@
             <!-- Feedback Section (Replaces upload section after analysis) -->
             <div v-if="isAnalyzed" class="space-y-6">
                 <h2 class="text-2xl font-semibold text-gray-800 text-center">ATS Optimization Feedback</h2>
-                <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div v-if="!atsResumeGenerated" class="bg-gray-50 p-6 rounded-lg shadow-md">
                     <p class="text-gray-600 mb-4">Here’s what you can do to make your resume more ATS-friendly:</p>
                     <div v-for="(item, index) in feedback" :key="index" class="flex items-start space-x-3 mb-3">
-                        <input type="checkbox" :id="'feedback-' + index" v-model="item.completed"
+                        <input type="checkbox" :id="'feedback-' + index" v-model="item.selected "
                             class="mt-1 h-5 w-5 text-blue-600 rounded">
                         <label :for="'feedback-' + index" class="text-gray-700">{{ item.suggestion }}</label>
                     </div>
@@ -141,9 +141,8 @@ const uploadResume = async (event) => {
     
     const formData = new FormData();
     formData.append('file',file.value)
-    api.post('/get-feedback',formData).then((res)=>{
+    api.post('/upload-resume',formData).then((res)=>{
         isUploaded.value = !isUploaded.value;
-        console.log(res);
         
     })
     //  const { data: { user }, err } = await supabase.auth.getUser();
@@ -161,31 +160,57 @@ const uploadResume = async (event) => {
 
 // Mock analysis
 const analyzeResume = () => {
-    feedback.value = [
-        { suggestion: 'Add relevant keywords from the job description.', completed: false },
-        { suggestion: 'Use standard section headings like "Experience" and "Education".', completed: false },
-        { suggestion: 'Remove complex formatting and graphics.', completed: false },
-        { suggestion: 'Ensure consistent font sizes and styles.', completed: false },
-        { suggestion: 'Include measurable achievements with numbers.', completed: false }
-    ];
-    isAnalyzed.value = true;
+    api.get("/get-feedback").then((res)=>{
+        console.log(res.data);
+        feedback.value = res.data.feedback.map(suggestion =>({
+            suggestion,
+            selected:false
+        })
+    );
+        isAnalyzed.value = true;
+    })
 };
 
 // Computed: check if all feedback is complete
 const allFeedbackCompleted = computed(() => {
-    return feedback.value.length > 0 && feedback.value.every(item => item.completed);
+    return feedback.value.length > 0 && feedback.value.some(item => item.selected);
 });
 
 // Mock apply suggestions
 const applySuggestions = () => {
-    if (allFeedbackCompleted.value) {
-        atsResumeGenerated.value = true;
-    }
+    let selectedFeedback = []
+    // if (allFeedbackCompleted.value) {
+        feedback.value.forEach(value => {
+            if (value.selected) {
+
+                selectedFeedback.push(value.suggestion)
+            }
+        });
+        api.post("/apply-feedback",{feedback:selectedFeedback}).then(res=>{
+            console.log(res.data);
+            atsResumeGenerated.value = true;
+        })
+        
+    // }
 };
 
 // Mock download
 const downloadResume = () => {
-    alert('Downloading ATS-friendly resume... (This is a mock action)');
+    api.get("/download-resume",{
+    responseType: 'blob',  // Important for binary data
+  }).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', "resume.md"); // Set file name
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  })
+  .catch((error) => {
+    console.error("Download failed:", error);
+  });
 };
 </script>
 

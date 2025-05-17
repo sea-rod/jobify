@@ -1,13 +1,5 @@
-from fastapi import FastAPI, Request, UploadFile, Form,HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from fastapi.templating import Jinja2Templates
-from services.resume_feedback import get_resume_feedback,apply_feedback
-from services.convert_to_markdown import markdown_to_pdf
-from v1.routes import upload_pdf
-import os
-from pydantic import BaseModel
+from fastapi import FastAPI
+from v1.routes import upload_pdf,get_feedback,download_resume
 
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,5 +23,7 @@ app.add_middleware(
 
 
 app.include_router(upload_pdf.router)
+app.include_router(get_feedback.router)
+app.include_router(download_resume.router)
 
 
