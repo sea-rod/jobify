@@ -16,7 +16,7 @@
 <template>
      <section id="home" class="min-h-screen flex items-center justify-center gradient-bg text-white pt-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">Land Your Dream Job with Jobfiy</h1>
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">Land Your Dream Job with jobify</h1>
         <p class="text-lg md:text-xl mb-8">Upload your CV, optimize it for ATS, and get tailored job recommendations effortlessly.</p>
         <button class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100 transition duration-300">Get Started</button>
       </div>
@@ -25,13 +25,13 @@
     <!-- Features Section -->
     <section id="features" class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Why Choose Jobfiy?</h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Why Choose jobify?</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Feature 1 -->
           <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
             <i class="fas fa-file-upload text-blue-600 text-4xl mb-4"></i>
             <h3 class="text-xl font-semibold text-gray-800 mb-2">Easy CV Upload</h3>
-            <p class="text-gray-600">Drag and drop your CV to securely save and manage it within Jobfiy.</p>
+            <p class="text-gray-600">Drag and drop your CV to securely save and manage it within jobify.</p>
           </div>
           <!-- Feature 2 -->
           <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
@@ -52,8 +52,8 @@
     <!-- About Section -->
     <section id="about" class="py-20 bg-gray-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">About Jobfiy</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto">Jobfiy is designed to simplify your job search. From CV optimization to personalized job recommendations, we help you stand out and land the job you deserve.</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">About jobify</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">jobify is designed to simplify your job search. From CV optimization to personalized job recommendations, we help you stand out and land the job you deserve.</p>
       </div>
     </section>
 
@@ -73,7 +73,7 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p>&copy; 2025 Jobfiy. All rights reserved.</p>
+        <p>&copy; 2025 jobify. All rights reserved.</p>
         <div class="mt-4 flex justify-center space-x-4">
           <a href="#" class="hover:text-blue-400"><i class="fab fa-twitter"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>

@@ -24,13 +24,13 @@ load_dotenv()
 def get_resume_feedback(resume):
 
     parser = JsonOutputParser(
-        pydantic_object={
-            "type": "object",
-            "properties": {
-                "feedback": {"type": "string"},
-            },
-            "required": ["feedback"],
-        }
+        # pydantic_object={
+        #     "type": "object",
+        #     "properties": {
+        #         "feedback": {"type": "array", "items": {"type": "string"}},
+        #     },
+        #     "required": ["feedback"],
+        # }
     )
 
     prompt = ChatPromptTemplate.from_messages(
@@ -43,7 +43,7 @@ def get_resume_feedback(resume):
                     {{"feedback": ["<point 1>", "<point 2>", "..."]}}
 
                 Do not include any introductions, conclusions, explanations, or additional fields—only the JSON object.
-                NOTE:ONLY GIVE THE FEEDBACK. DO NOT GIVE UNECESSARY FEEDBACK.
+                NOTE:ONLY GIVE THE FEEDBACK. DO NOT GIVE UNECESSARY FEEDBACK. DO NOT ADD CONCLUSION OR INTRODUCTION ONLY STRICTLY JSON FORMAT
 
                 Resume Text:{resume}""",
             ),
@@ -59,7 +59,7 @@ def get_resume_feedback(resume):
     return response.get("feedback",[])
 
 
-def apply_feedback(resume:str, feedback:list):
+def apply_feedback(resume: str, feedback: list):
     parser = JsonOutputParser(
         pydantic_object={
             "type": "Object",
@@ -113,7 +113,7 @@ def apply_feedback(resume:str, feedback:list):
 
 if __name__ == "__main__":
 
-    resume = '''John Doe
+    resume = """John Doe
     📍 San Francisco, CA | 📞 (123) 456-7890 | ✉️ john.doe@email.com | 🌐 linkedin.com/in/johndoe
 
     Professional Summary
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     Work Experience
     Software Engineer
     ABC Tech Solutions, San Francisco, CA
-    Jan 2021 – Present
+    Jan 2021 - Present
 
     Developed internal tools using Python and Flask, improving process efficiency by 25%.
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     Junior Developer
     CodeWave Inc., Remote
-    Jun 2019 – Dec 2020
+    Jun 2019 - Dec 2020
 
     Maintained and upgraded legacy applications in PHP and JavaScript.
 
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     Education
     Bachelor of Science in Computer Science
     University of California, Davis
-    2015 – 2019
+    2015 - 2019
 
     Skills
     Programming: Python, JavaScript, HTML, CSS, SQL
@@ -152,9 +152,9 @@ if __name__ == "__main__":
 
     Tools: Git, Docker, Jira, Postman
 
-    Soft Skills: Communication, Problem-solving, Teamwork'''
-
+    Soft Skills: Communication, Problem-solving, Teamwork"""
 
     feedback = get_resume_feedback(resume)
-    if feedback:
-        apply_feedback(resume, feedback)
+    print(feedback, type(feedback))
+    # if feedback:
+    #     apply_feedback(resume, feedback)

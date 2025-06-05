@@ -21,8 +21,9 @@ from fastapi.exceptions import HTTPException
 from core import resume_parser
 from services.supabase_config import supabase
 from utils.file_utils import upload_to_supabase
-import os
 from fastapi.security import OAuth2PasswordBearer
+from services.extract_skills import extract_skills,insert_skils
+import os
 
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -57,6 +58,8 @@ async def create_upload_file(
 
     uid = supabase.auth.get_user(token).user.id
     text = await resume_parser.extract_text(content)
+    skills = extract_skills(text)
+    res = insert_skils(skills,uid)
 
     
     if upload_to_supabase(token, text, f"{uid}/resume.md"):

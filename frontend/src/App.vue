@@ -24,8 +24,8 @@
           <a href="#about" class="text-gray-700 hover:text-blue-600">About</a>
           <a href="#contact" class="text-gray-700 hover:text-blue-600">Contact</a>
         </div>
-        <a v-if="isAuth" href="/auth" class="text-white bg-blue-500 px-5 py-2 hover:text-blue-600">Login</a>
-        <a v-else="isAuth" href="#" class="text-white bg-red-500 px-5 py-2 hover:text-gray-200">Logout</a>
+        <button v-if="isAuth" @click="signOut" class="text-white bg-red-500 px-5 py-2 hover:text-gray-200">Logout</button>
+        <a v-else="isAuth" href="/auth" class="text-white bg-blue-500 px-5 py-2 hover:text-blue-600">Login</a>
 
         <button class="md:hidden" @click="toggleMenu">
           <i class="fas fa-bars text-gray-700 text-2xl"></i>
@@ -51,14 +51,34 @@
 <script setup>
 import { ref } from "vue";
 import { supabase } from "./supabase"
+import router from "./router"
 
 const isMenuOpen = ref(false)
 
 const isAuth = ref(false)
 
-isAuth.value = supabase.auth.user?true:false
+supabase.auth.getUser().then((res)=>{
+  console.log(res.data);
+  isAuth.value = res.data.user?true:false
+
+})
+
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
 }
+
+function signOut() {
+  supabase.auth.signOut().then((res)=>{
+    console.log(res,"logged out successfully");
+    
+    router.push("/")
+    console.log(isAuth.value);
+    
+    isAuth.value = false
+      }).catch(err=>{
+      console.log(err);
+  })
+}
+
 </script>
