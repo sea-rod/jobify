@@ -1,7 +1,7 @@
 // api.js
 import axios from 'axios';
 import { supabase } from './supabase';  // Supabase client
-import { useRouter } from 'vue-router';  // For redirection (make sure to install if using Vue Router)
+import router from './router'; // For redirection (make sure to install if using Vue Router)
 
 const api = axios.create({
   baseURL: ' http://127.0.0.1:8000',
@@ -9,13 +9,14 @@ const api = axios.create({
 
 let currentUser = null;
 let currentToken = null;
-const router = useRouter(); // Vue Router for redirecting to login
 
 // Function to get the current user and their token (stored by Supabase)
 const fetchUserToken = async () => {
-  const user = supabase.auth.user();
+  const user = await supabase.auth.getUser();
   if (user) {
-    currentToken = user.access_token; // Supabase provides the token directly
+
+    currentToken = await supabase.auth.getSession()
+    currentToken = currentToken.data.session.access_token
     currentUser = user;
   } else {
     currentToken = null;
@@ -50,7 +51,7 @@ const refreshTokenIfNeeded = async () => {
   } catch (error) {
     // Catch token errors (expired, missing, or refresh errors)
     console.error('Token error:', error.message);
-    router.push('/login'); // Redirect to login if token is missing or refresh failed
+    router.push('/auth'); // Redirect to login if token is missing or refresh failed
     throw error; // Re-throw to handle request rejection
   }
 };
@@ -74,10 +75,13 @@ api.interceptors.response.use(
       // Handle 401 errors (Unauthorized)
       if (error.response.status === 401) {
         console.log('Token expired or invalid, attempting to refresh...');
+        
         try {
+          console.log("hello");
+          
           // Attempt to refresh the token
           const token = await refreshTokenIfNeeded();
-          
+          console.log(token,"h")
           // Retry the original request with the new token
           if (token) {
             error.config.headers.Authorization = `Bearer ${token}`;
@@ -85,7 +89,7 @@ api.interceptors.response.use(
           }
         } catch (err) {
           // If refresh fails, redirect to login
-          router.push('/login');
+          router.push('/auth');
         }
       }
     }

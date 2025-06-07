@@ -17,9 +17,8 @@ from fastapi.routing import APIRouter
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
-import supabase
-from utils.file_utils import download_file
-
+from services.supabase_config import supabase
+from core.job_fetcher import fetch_jobs
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
@@ -29,5 +28,9 @@ router = APIRouter()
 def get_jobs(token: Annotated[str, Depends(oauth2_scheme)]):
     uid = supabase.auth.get_user(token).user.id
     print(uid)
-    path = f"{uid}/resume.md"
-    response = download_file(path, token)
+    res = (
+        supabase.table("user_skills").select("skills").eq("user_id", uid).execute()
+    )
+    skills = res.data[0]["skills"]["technical_skills"]
+    job_list = fetch_jobs("pune",skills=skills)
+    return job_list

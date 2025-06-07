@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from fastapi import FastAPI
-from v1.routes import upload_pdf, get_feedback, download_resume
+from v1.routes import upload_pdf, get_feedback, download_resume,get_jobs
 
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,3 +39,4 @@ app.add_middleware(
 app.include_router(upload_pdf.router)
 app.include_router(get_feedback.router)
 app.include_router(download_resume.router)
+app.include_router(get_jobs.router)
