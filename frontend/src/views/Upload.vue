@@ -161,6 +161,7 @@ const uploadResume = async (event) => {
     formData.append('file',file.value)
     isVisible.value = true
     api.post('/upload-resume',formData).then((res)=>{
+        
         isUploaded.value = !isUploaded.value;
         isVisible.value = false
     }).catch((err)=>{
