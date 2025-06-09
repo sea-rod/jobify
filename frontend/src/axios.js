@@ -4,7 +4,7 @@ import { supabase } from './supabase';  // Supabase client
 import router from './router'; // For redirection (make sure to install if using Vue Router)
 
 const api = axios.create({
-  baseURL: ' http://127.0.0.1:8000',
+  baseURL: import.meta.env.VITE_SUPABASE_URL | 'http://127.0.0.1:8000',
 });
 
 let currentUser = null;

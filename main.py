@@ -13,16 +13,23 @@
 # limitations under the License.
 
 from fastapi import FastAPI
-from v1.routes import upload_pdf, get_feedback, download_resume,get_jobs
+from v1.routes import upload_pdf, get_feedback, download_resume, get_jobs
 
 
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import dotenv
+
+dotenv.load_dotenv()
+
+ALLOWED_HOST = os.environ.get("ALLOWED_HOST")
 
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost:5173",
     "http://localhost:8080",
+    ALLOWED_HOST,
 ]
 
 app = FastAPI()
