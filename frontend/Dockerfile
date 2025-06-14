@@ -6,7 +6,7 @@ WORKDIR /app/frontend
 # add . since this file in alredy in ./frontend 
 COPY . . 
 
-RUN --mount=type=secret,id=build_env,dst=/etc/secrets/build.env cat /etc/secrets/build.env
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env
 
 # RUN cd ./frontend
 RUN npm install
