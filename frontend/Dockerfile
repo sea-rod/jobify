@@ -15,3 +15,4 @@ RUN npm run build
 # Serve static files using nginx
 FROM nginx:alpine
 COPY --from=0 /app/frontend/dist /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
