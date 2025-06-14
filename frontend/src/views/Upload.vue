@@ -53,18 +53,18 @@
             </div>
 
             <!-- Analyze Button (Shown only after upload) -->
-            <div v-if="!isUploaded" class="text-center mb-8">
-                <button @click="uploadResume" :disabled="!fileName"
-                    class="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
+            <div class="flex justify-around mb-8 mx-10 px-5">
+                <button  v-if="!isUploaded" @click="uploadResume" :disabled="!fileName"
+                    class="px-3 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Upload Resume
                 </button>
-            </div>
-            <div v-if="!isAnalyzed && isUploaded" class="text-center mb-8">
-                <button @click="analyzeResume" 
-                    class="bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                <button v-if="!isAnalyzed && isInStorage" @click="analyzeResume" 
+                    class="px-3 bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Analyze Resume
                 </button>
             </div>
+            <!-- <div v-if="!isAnalyzed || isUploaded" class="text-center mb-8">
+            </div> -->
 
             <!-- Feedback Section (Replaces upload section after analysis) -->
             <div v-if="isAnalyzed" class="space-y-6">
@@ -97,8 +97,9 @@
     </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import api from "../axios"
+import { supabase } from '../supabase' 
 
 const fileName = ref(null);
 const file = ref(null);
@@ -107,6 +108,28 @@ const isUploaded = ref(false);
 const isAnalyzed = ref(false);
 const atsResumeGenerated = ref(false);
 const isVisible = ref(false)
+const isInStorage = ref(false)
+
+onMounted(async ()=>{
+    
+    let data = (await supabase.auth.getUser()).data;    
+    if(data){
+        supabase.storage.from('jobify')
+          .list(data.user.id, {
+            limit: 2,
+            offset: 0,
+            sortBy: { column: 'name', order: 'asc' },
+          }).then((res)=>{
+              if (res.data.length>0) {
+                isInStorage.value = true;
+                  console.log(res.data[0].name);
+              }
+
+          })
+    }
+  
+})
+
 
 const handleFileUpload =  (event) => {
     file.value = event.target.files[0];
@@ -182,6 +205,7 @@ const analyzeResume = () => {
     );
         isVisible.value = false
         isAnalyzed.value = true;
+        isUploaded.value = true
     }).catch((err)=>{
         console.log(err);
         isVisible.value = false;
