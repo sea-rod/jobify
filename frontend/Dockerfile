@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 
 # add . since this file in alredy in ./frontend 
 COPY . . 
-
+COPY /etc/secrets/build.env .env
 # RUN cd ./frontend
 RUN npm install
 RUN npm run build
