@@ -2,9 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app/frontend
 
+
 # add . since this file in alredy in ./frontend 
 COPY . . 
-COPY /etc/secrets/build.env .env
+
+RUN --mount=type=secret,id=build.env,dst=/etc/secrets/build.env cat /etc/secrets/build.env
+
 # RUN cd ./frontend
 RUN npm install
 RUN npm run build
