@@ -25,13 +25,12 @@ dotenv.load_dotenv()
 ALLOWED_HOST = os.environ.get("ALLOWED_HOST")
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
     "http://localhost:5173",
     "http://localhost:8080",
     ALLOWED_HOST,
 ]
 
+print(origins)
 app = FastAPI()
 
 app.add_middleware(

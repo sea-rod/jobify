@@ -14,14 +14,14 @@
 
 
 import markdown
+import io
 from weasyprint import HTML
 
 
-def markdown_to_pdf(markdown_text: str, output_pdf_path: str):
+def markdown_to_pdf(markdown_text: str):
     """Converts Markdown text to a PDF file."""
     # Convert Markdown to HTML
     html_content = markdown.markdown(markdown_text)
-
     # Create a full HTML document (optional but good for styling)
     full_html = f"""
     <html>
@@ -48,15 +48,13 @@ def markdown_to_pdf(markdown_text: str, output_pdf_path: str):
         </body>
     </html>
     """
-
-    # Convert the HTML to a PDF
-    HTML(string=full_html).write_pdf(output_pdf_path)
-    return True
-    # print(f"PDF created successfully at: {output_pdf_path}")
+    buffer = HTML(string=full_html).write_pdf()
+    buffer = io.BytesIO(buffer)
+    buffer.seek(0)
+    return buffer
 
 if "__main__"==__name__:
-    markdown_text = """
-                    # Jobify
+    markdown_text = """# Jobify
 
 **Jobify** is your friendly AI-powered resume assistant. It helps you improve your resume so you land more interviews, and even suggests jobs that match your skills. With Jobify, you can easily upload your current resume and let intelligent tools analyze it. Think of it as having a personal career coach that checks your resume for you and gives practical tips to stand out.
 
@@ -111,5 +109,5 @@ Jobify takes the guesswork out of job hunting. Whether you're updating your resu
 > 🙌 Build a better resume. Apply smarter. Land more interviews — with **Jobify**.
 
                     """
-    html_content = markdown.markdown(markdown_text)
+    html_content = markdown_to_pdf(markdown_text,"./pdfs/hehe.pdf")
     print(html_content)
