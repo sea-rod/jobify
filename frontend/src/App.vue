@@ -4,7 +4,8 @@
       <div class="flex justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center">
-          <span class="text-xl font-bold text-blue-500">Logo</span>
+          <img src="./assets/icon.png" height="64px" width="64px">
+          <span class="text-2xl font-bold text-blue-500">Jobify</span>
         </div>
 
         <!-- Desktop Menu -->
