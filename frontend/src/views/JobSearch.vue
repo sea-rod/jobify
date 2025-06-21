@@ -43,13 +43,23 @@ import { ref,onMounted } from 'vue';
 
 const jobs = ref([]);
 
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
 
 onMounted(() => {
-  console.log('Component mounted!')
-   api.get("/jobs").then(res=>{
+    api.get("/jobs").then(res=>{
         console.log(res);
         console.log(res.data);
         jobs.value = res.data
+        
+    }).catch((err)=>{
+        toast(err.response.data.detail, {
+          "theme": "auto",
+          "type": "error",
+          "dangerouslyHTMLString": true
+        })
+        console.log(err);
         
     })
 })
