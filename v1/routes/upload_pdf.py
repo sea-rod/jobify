@@ -13,7 +13,6 @@
 # limitations under the License.
 
 
-
 from fastapi import UploadFile, Depends
 from fastapi import APIRouter
 from typing import Annotated
@@ -22,7 +21,7 @@ from core import resume_parser
 from services.supabase_config import supabase
 from utils.file_utils import upload_to_supabase
 from fastapi.security import OAuth2PasswordBearer
-from services.extract_skills import extract_skills,insert_skils
+from services.extract_skills import extract_skills, insert_skills
 import os
 
 
@@ -49,9 +48,7 @@ async def create_upload_file(
     content = await file.read()
 
     if not is_valid_pdf(content):
-        raise HTTPException(
-            status_code=400, detail="Invalid PDF format"
-        )
+        raise HTTPException(status_code=400, detail="Invalid PDF format")
 
     if len(content) > MAX_FILE_SIZE_MB * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File too large")
@@ -59,11 +56,10 @@ async def create_upload_file(
     uid = supabase.auth.get_user(token).user.id
     text = await resume_parser.extract_text(content)
     skills = extract_skills(text)
-    res = insert_skils(skills,uid)
+    res = insert_skills(skills, uid)
+    print("skills:", res)
 
-    
     if upload_to_supabase(token, text, f"{uid}/resume.md"):
         return {"message": "Upload successful"}
-    
-    raise HTTPException(status_code=500, detail="Upload Failed")
 
+    raise HTTPException(status_code=500, detail="Upload Failed")

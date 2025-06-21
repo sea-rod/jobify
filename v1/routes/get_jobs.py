@@ -15,10 +15,12 @@
 
 from fastapi.routing import APIRouter
 from fastapi import Depends
+from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
 from services.supabase_config import supabase
 from core.job_fetcher import fetch_jobs
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
@@ -27,10 +29,13 @@ router = APIRouter()
 @router.get("/jobs")
 def get_jobs(token: Annotated[str, Depends(oauth2_scheme)]):
     uid = supabase.auth.get_user(token).user.id
-    print(uid)
-    res = (
-        supabase.table("user_skills").select("skills").eq("user_id", uid).execute()
-    )
-    skills = res.data[0]["skills"]["technical_skills"]
-    job_list = fetch_jobs("pune",skills=skills)
-    return job_list
+    res = supabase.table("user_skills").select("skills").eq("user_id", uid).execute()
+    if res.data:
+        skills = res.data[0]["skills"]["technical_skills"]
+        job_list = fetch_jobs("pune", skills=skills)
+        return job_list
+    else:
+        raise HTTPException(
+            404,
+            "Couldn't extarct skills from the resume. Make sure the resume is in proper format and has skill section",
+        )

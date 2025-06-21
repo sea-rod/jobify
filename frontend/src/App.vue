@@ -35,7 +35,7 @@
           </button>
           <router-link 
             v-if="!isAuth"
-            to="/signup"
+            to="/auth"
             class="px-4 py-2 bg-green-500 text-white hover:bg-green-600 rounded-md transition-colors duration-200"
           >
             Signup
@@ -132,12 +132,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted,onUpdated } from 'vue'
 import { supabase } from './supabase'
+
 import router from './router'
+import { useAuth } from './useAuth'
 
 const isMenuOpen = ref(false)
-const isAuth = ref(false)
+// const isAuth = ref(false)
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -146,10 +148,14 @@ const navLinks = [
   { name: 'Contact', path: '/contact' },
 ]
 
-supabase.auth.getUser().then((res) => {
-  console.log(res.data)
-  isAuth.value = res.data.user ? true : false
-})
+const { user, isAuth } = useAuth()
+
+// onUpdated(()=>{
+//   supabase.auth.getUser().then((res) => {
+//     console.log(res.data)
+//     isAuth.value = res.data.user ? true : false
+//   })
+// })
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value

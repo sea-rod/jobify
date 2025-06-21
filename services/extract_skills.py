@@ -46,7 +46,7 @@ def extract_skills(resume: str):
         Skills: Python, JavaScript, React, Django, AWS, Docker, Git, Jenkins, MongoDB
         Certifications: AWS Certified Solutions Architect - Associate, Scrum Master (CSM)
         Soft skills: Teamwork, Problem-solving, Communication""",
-                    "skills": """{{"domain": "Software Engineering",
+            "skills": """{{"domain": "Software Engineering",
           "technical_skills": ["Python", "JavaScript", "React", "Django", "MongoDB", "Docker", "Git", "Jenkins"],
           "methodologies": ["Agile", "Scrum"],
           "soft_skills": ["Teamwork", "Problem-solving", "Communication"],
@@ -56,14 +56,14 @@ def extract_skills(resume: str):
           "industry_knowledge": []
         }}""",
         },
-                {
-                    "resume": """Jane Smith
+        {
+            "resume": """Jane Smith
         Marketing Manager with 5+ years in digital strategy, content marketing, and SEO.
         Skills: SEO, Google Ads, Google Analytics, HubSpot, Copywriting, Social Media
         Certifications: HubSpot Inbound Marketing, Google Ads Certification
         Languages: English, Spanish
         Soft Skills: Creativity, Collaboration, Leadership""",
-                    "skills": """{{
+            "skills": """{{
           "domain": "Marketing",
           "technical_skills": ["SEO", "Google Ads", "Google Analytics", "Copywriting"],
           "methodologies": ["Digital Strategy", "Content Marketing"],
@@ -73,14 +73,14 @@ def extract_skills(resume: str):
           "tools": ["HubSpot", "Google Ads", "Google Analytics"],
           "industry_knowledge": ["Lead Generation", "Digital Marketing"]
         }}""",
-                },
-                {
-                    "resume": """Alex White
+        },
+        {
+            "resume": """Alex White
         Cybersecurity Analyst with experience in penetration testing, SIEM tools, and incident response.
         Tools: Wireshark, Nessus, Splunk, Kali Linux
         Certifications: CompTIA Security+, CEH
         Soft Skills: Critical thinking, Problem-solving, Attention to detail""",
-                    "skills": """{{
+            "skills": """{{
           "domain": "Cybersecurity",
           "technical_skills": ["Penetration Testing", "Incident Response"],
           "methodologies": ["SIEM", "Vulnerability Assessment"],
@@ -90,15 +90,15 @@ def extract_skills(resume: str):
           "tools": ["Wireshark", "Nessus", "Splunk", "Kali Linux"],
           "industry_knowledge": ["Cybersecurity", "Network Security"]
         }}""",
-                },
-                {
-                    "resume": """Priya Mehta
+        },
+        {
+            "resume": """Priya Mehta
         Financial Analyst with expertise in financial modeling, budgeting, and reporting.
         Tools: Excel, Power BI, SAP
         Certifications: CFA Level 1, CPA (India)
         Soft Skills: Analytical thinking, Accuracy, Time management
         Languages: English, Hindi""",
-                    "skills": """{{
+            "skills": """{{
           "domain": "Finance",
           "technical_skills": ["Financial Modeling", "Budgeting", "Forecasting", "Reporting"],
           "methodologies": ["Financial Analysis", "Variance Analysis"],
@@ -133,7 +133,7 @@ def extract_skills(resume: str):
     return res
 
 
-def insert_skils(skills,uid):
+def insert_skills(skills, uid):
     try:
         response = (
             supabase.table("user_skills")
@@ -147,7 +147,11 @@ def insert_skils(skills,uid):
         if e.code == "23505":
             response = (
                 supabase.table("user_skills")
-                .update({"skills": skills,})
+                .update(
+                    {
+                        "skills": skills,
+                    }
+                )
                 .eq("user_id", uid)
                 .execute()
             )
@@ -200,4 +204,4 @@ if __name__ == "__main__":
     Soft Skills: Communication, Problem-solving, Teamwork"""
 
     res = extract_skills(resume)
-    insert_skils(res,"uid")
+    insert_skills(res, "uid")
